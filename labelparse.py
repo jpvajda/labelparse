@@ -33,6 +33,15 @@ for repo in reponames:
     for issue in response.json():
         print_issue(issue)
 
+
+# @todo add logic for status codes error handling
+
+#  if response.status_code == 200:
+#         elif response.status_code == 404:
+#         print('Not Found.')
+
+
+# @todo return a count of each label type.
 # for each issue
 #   for each label
 #     if we have a count for this label, +1
