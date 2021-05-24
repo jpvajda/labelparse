@@ -1,4 +1,4 @@
-'''This script will fetch and return all issues from Github in the following repos.'''
+'''This script will fetch and all issues from Github in the following repos.'''
 
 import requests
 
@@ -16,6 +16,7 @@ dtk_repo_names = ['infrastructure-agent-ansible', 'infrastructure-agent-chef', '
 
 def print_labels(issue):
     '''Loops through repo data'''
+
     if 'labels' in issue and issue['labels'] != []:
         for label in issue['labels']:
             print('Label: ' + label['name'])
@@ -23,28 +24,25 @@ def print_labels(issue):
 
 def print_issue(issue):
     '''prints issues'''
-    print('\n')
-    print('Repo: ' + issue['repository_url'])
-    print('ID: ' + str(issue['id']))
-    print('Title: ' + issue['title'])
-    print_labels(issue)
+
+    if response.status_code == 200:
+        print('\n')
+        print('Repo: ' + issue['repository_url'])
+        print('ID: ' + str(issue['id']))
+        print('Title: ' + issue['title'])
+        print_labels(issue)
+    else:
+        print('Error: Not Found.')
 
 # Fetches repo data
 
 
-for repo in nerdpack_repo_names:
+for repo in dtk_repo_names:
     response = requests.get(
         'https://api.github.com/repos/newrelic/' + str(repo) + '/issues')
 
     for issue in response.json():
         print_issue(issue)
-
-
-# @todo add logic for status codes error handling
-
-#  if response.status_code == 200:
-#         elif response.status_code == 404:
-#         print('Not Found.')
 
 
 # @todo return a count of each label type.
