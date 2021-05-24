@@ -1,4 +1,5 @@
-import json
+'''This script will fetch and return all issues from Github in the following repos.'''
+
 import requests
 
 
@@ -12,16 +13,16 @@ nerdpack_repo_names = ['nr1-github', 'nr1-account-maturity', 'nr1-browser-analyz
 dtk_repo_names = ['infrastructure-agent-ansible', 'infrastructure-agent-chef', 'infrastructure-agent-puppet', 'tutone', 'terraform-provider-newrelic',
                   'terraform-newrelic-apm', 'newrelic-cloudformation', 'newrelic-cli', 'newrelic-kubernetes-operator', 'newrelic-client-go', 'developer-toolkit']
 
-# Loops through repo data
-
 
 def print_labels(issue):
+    '''Loops through repo data'''
     if 'labels' in issue and issue['labels'] != []:
         for label in issue['labels']:
             print('Label: ' + label['name'])
 
 
 def print_issue(issue):
+    '''prints issues'''
     print('\n')
     print('Repo: ' + issue['repository_url'])
     print('ID: ' + str(issue['id']))
