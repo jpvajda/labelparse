@@ -33,23 +33,23 @@ def print_issue(issue):
 def repo_fetch():
     '''fetches all issues from repos and returns a count of labels'''
 
+    labels_count = {}
 
-labels_count = {}
+    for repo in dtk_repo_names:
+        response = requests.get(
+            'https://api.github.com/repos/newrelic/' + str(repo) + '/issues')
+        if response.status_code == 200:
+            for issue in response.json():
+                print_issue(issue)
+                for label in issue['labels']:
+                    if label['name'] in labels_count:
+                        label[label['name']] += 1
+                    else:
+                        label[label['name']] = 1
+            print(labels_count)
 
-for repo in dtk_repo_names:
-    response = requests.get(
-        'https://api.github.com/repos/newrelic/' + str(repo) + '/issues')
-    if response.status_code == 200:
-        for issue in response.json():
-            print_issue(issue)
-            for label in issue['labels']:
-                if label['name'] in labels_count:
-                    label[label['name']] += 1
-                else:
-                    label[label['name']] = 1
-        print(labels_count)
+        else:
+            print('Error: Not Found.')
 
-    else:
-        print('Error: Not Found.')
 
 repo_fetch()
