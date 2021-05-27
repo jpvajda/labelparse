@@ -1,4 +1,4 @@
-'''This script will fetch and all issues from Github in the following repos.'''
+'''This script will fetch and count labels for  all issues from Github in the following repos.'''
 
 import requests
 
