@@ -2,7 +2,6 @@
 
 import requests
 
-
 # sets 3rd party Nerdpacks repo names
 
 nerdpack_repo_names = ['nr1-github', 'nr1-account-maturity', 'nr1-browser-analyzer', 'nr1-cloud-optimize',  'nr1-container-explorer', 'nr1-datalyzer', 'nr1-deployment-analyzer', 'nr1-event-stream', 'nr1-graphiql-notebook', 'nr1-groundskeeper', 'nr1-integrations-manager',
@@ -24,29 +23,33 @@ def print_labels(issue):
 
 def print_issue(issue):
     '''prints issues'''
-
-    if response.status_code == 200:
-        print('\n')
-        print('Repo: ' + issue['repository_url'])
-        print('ID: ' + str(issue['id']))
-        print('Title: ' + issue['title'])
-        print_labels(issue)
-    else:
-        print('Error: Not Found.')
-
-# Fetches repo data
+    print('\n')
+    print('Repo: ' + issue['repository_url'])
+    print('ID: ' + str(issue['id']))
+    print('Title: ' + issue['title'])
+    print_labels(issue)
 
 
-for repo in dtk_repo_names:
-    response = requests.get(
-        'https://api.github.com/repos/newrelic/' + str(repo) + '/issues')
+def repo_fetch():
+    '''fetches all issues from repos and returns a count of labels'''
 
-    for issue in response.json():
-        print_issue(issue)
+    labels_count = {}
+
+    for repo in dtk_repo_names:
+        response = requests.get(
+            'https://api.github.com/repos/newrelic/' + str(repo) + '/issues')
+        if response.status_code == 200:
+            for issue in response.json():
+                print_issue(issue)
+                for label in issue['labels']:
+                    if label['name'] in labels_count:
+                        labels_count[label['name']] += 1
+                    else:
+                        labels_count[label['name']] = 1
+        else:
+            print('Error: Not Found.')
+
+    print(labels_count)
 
 
-# @todo return a count of each label type.
-# for each issue
-#   for each label
-#     if we have a count for this label, +1
-#     if we don't have a count for this label, make one and set to 1
+repo_fetch()
