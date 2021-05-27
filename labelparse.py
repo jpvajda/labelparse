@@ -43,13 +43,13 @@ def repo_fetch():
                 print_issue(issue)
                 for label in issue['labels']:
                     if label['name'] in labels_count:
-                        label[label['name']] += 1
+                        labels_count[label['name']] += 1
                     else:
-                        label[label['name']] = 1
-            print(labels_count)
-
+                        labels_count[label['name']] = 1
         else:
             print('Error: Not Found.')
+
+    print(labels_count)
 
 
 repo_fetch()
