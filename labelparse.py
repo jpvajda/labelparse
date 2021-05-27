@@ -13,21 +13,17 @@ dtk_repo_names = ['infrastructure-agent-ansible', 'infrastructure-agent-chef', '
                   'terraform-newrelic-apm', 'newrelic-cloudformation', 'newrelic-cli', 'newrelic-kubernetes-operator', 'newrelic-client-go', 'developer-toolkit']
 
 
-def print_labels(issue):
-    '''Loops through repo data'''
-
-    if 'labels' in issue and issue['labels'] != []:
-        for label in issue['labels']:
-            print('Label: ' + label['name'])
-
-
 def print_issue(issue):
     '''prints issues'''
-    print('\n')
-    print('Repo: ' + issue['repository_url'])
-    print('ID: ' + str(issue['id']))
-    print('Title: ' + issue['title'])
-    print_labels(issue)
+
+    labels = ', '.join([label['name'] for label in issue.get('labels', [])])
+
+    print(f"""
+Repo: {issue['repository_url']}
+ID: {issue['id']}
+Title: {issue['title']}
+Labels: {labels}
+    """)
 
 
 def repo_fetch():
@@ -37,19 +33,19 @@ def repo_fetch():
 
     for repo in dtk_repo_names:
         response = requests.get(
-            'https://api.github.com/repos/newrelic/' + str(repo) + '/issues')
-        if response.status_code == 200:
+            f'https://api.github.com/repos/newrelic/{repo}/issues'
+        )
+        if response:
             for issue in response.json():
                 print_issue(issue)
-                for label in issue['labels']:
-                    if label['name'] in labels_count:
-                        labels_count[label['name']] += 1
-                    else:
-                        labels_count[label['name']] = 1
+                for label in issue.get('labels', []):
+                    labels_count[label['name']] = (
+                        labels_count.setdefault(label['name'], 0) + 1
+                    )
         else:
             print('Error: Not Found.')
 
     print(labels_count)
 
-
-repo_fetch()
+if __name__ == '__main__':
+    repo_fetch()
